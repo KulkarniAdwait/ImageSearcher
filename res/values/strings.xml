@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Image Search</string>
+    <string name="search_hint">Enter Image Filter</string>
+    <string name="search_button">Search</string>
+    <string name="title_activity_image_view">View Image</string>
+    <string name="menu_title_search">Filter</string>
+    <string name="title_activity_filter">Filter Search</string>
+    <string name="label_advanced_options">Advanced Search Options</string>
+    <string name="label_image_size">Image Size</string>
+    <string name="label_color_filter">Color Filter</string>
+    <string name="label_image_type">Image Type</string>
+    <string name="label_site_filter">Site Filter</string>
+
+</resources>
