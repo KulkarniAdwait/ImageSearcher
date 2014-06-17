@@ -1,1 +1,1 @@
-![Video Walkthrough]imageSearch.gif
+![Video Walkthrough](imageSearch.gif)
