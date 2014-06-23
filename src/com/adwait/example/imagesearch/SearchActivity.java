@@ -31,6 +31,9 @@ public class SearchActivity extends Activity {
 	ArrayList<ImageResult> imageResults = new ArrayList<ImageResult>();
 	ImageResultArrayAdapter imageAdapter;
 	SearchFilter sf = new SearchFilter();
+	int cStartIndex = 1;
+	int cEndIndex = 8;
+	final int PAGE_SIZE = 16;
 	
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -59,6 +62,23 @@ public class SearchActivity extends Activity {
 			}
 			
 		});
+		
+		gvImages.setOnScrollListener(new EndlessScrollListener() {
+		    @Override
+		    public void onLoadMore(int page, int totalItemsCount) {
+	                // Triggered only when new data needs to be appended to the list
+	                // Add whatever code is needed to append new items to your AdapterView
+		        //customLoadMoreDataFromApi(page);
+		    	searchImages();
+	                // or customLoadMoreDataFromApi(totalItemsCount); 
+		    }
+	        });
+	}
+	
+	private void resetSearch() {
+		imageResults.clear();
+		cStartIndex = 1;
+		cEndIndex = 8;
 	}
 	
 	public void onFilter(MenuItem mi) {
@@ -75,6 +95,7 @@ public class SearchActivity extends Activity {
 	     sf = (SearchFilter) data.getExtras().getSerializable("filter");
 	     // Toast the name to display temporarily on screen
 	     //Toast.makeText(this, sf.getImageSize(), Toast.LENGTH_SHORT).show();
+	     resetSearch();
 	     searchImages();
 	  }
 	} 
@@ -87,7 +108,11 @@ public class SearchActivity extends Activity {
 
 	public void onImageSearch(View v) {
 		//Toast.makeText(SearchActivity.this, etImageQuery.getText().toString(), Toast.LENGTH_SHORT).show();
+		resetSearch();
 		searchImages();
+		if(cEndIndex <= PAGE_SIZE) {
+			searchImages();
+		}
 	}
 	
 	private void searchImages() {
@@ -117,6 +142,11 @@ public class SearchActivity extends Activity {
 			}
 		}
 		
+		completeRequest.append("&start=" + Uri.encode(Integer.toString(cStartIndex)));
+		int temp = cEndIndex - cStartIndex;
+		cStartIndex = cEndIndex;
+		cEndIndex += temp;
+		
 		Log.d("DEBUG", completeRequest.toString());
 		client.get(completeRequest.toString(), new JsonHttpResponseHandler(){
 			@Override
@@ -124,7 +154,7 @@ public class SearchActivity extends Activity {
 				JSONArray results = null;
 				try {
 					results = response.getJSONObject("responseData").getJSONArray("results");
-					imageResults.clear();
+					//imageResults.clear();
 					imageAdapter.addAll(ImageResult.fromJSONArray(results));
 					Log.d("DEBUG", results.toString());
 				}
